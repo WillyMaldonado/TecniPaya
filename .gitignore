@@ -1,0 +1,13 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+# Docker & logs
+*.log
+docker_data/
