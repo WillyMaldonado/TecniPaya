@@ -38,14 +38,14 @@ model AltaLaptops {
   codigoInventario String       @id @map("codigo_inventario")
   marca            String
   modelo           String
-  proveedorId      String?      @map("proveedor_id")
+  proveedorId      String      @map("proveedor_id")
   maletin          Boolean      @default(false)
   cargador         Boolean      @default(true)
   estado           EstadoLaptop @default(DISPONIBLE)
   fechaBaja        DateTime?    @map("fecha_baja")
   motivoBaja       String?      @map("motivo_baja")
 
-  proveedor       Proveedor?       @relation(fields: [proveedorId], references: [id])
+  proveedor       Proveedor       @relation(fields: [proveedorId], references: [id])
   licencias       Licencia[]
   reparaciones    Reparacion[]
   prestamosLaptop PrestamoLaptop[]
@@ -55,7 +55,7 @@ model Cliente {
   nit            String     @id
   nombre         String
   telefono       String
-  contacto       String?
+  contacto       String
   saldoPendiente Decimal    @default(0.00) @map("saldo_pendiente") @db.Decimal(10, 2)
   prestamos      Prestamo[]
 }
@@ -65,7 +65,7 @@ model Prestamo {
   nit             String
   fechaEntrega    DateTime       @default(now()) @map("fecha_entrega")
   fechaDevolucion DateTime?      @map("fecha_devolucion")
-  costo           Decimal        @db.Decimal(10, 2)
+  costo           Decimal?        @db.Decimal(10, 2)
   estado          EstadoPrestamo @default(ACTIVO)
 
   cliente Cliente          @relation(fields: [nit], references: [nit])
