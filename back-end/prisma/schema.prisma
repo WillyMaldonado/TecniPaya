@@ -56,6 +56,7 @@ model Cliente {
   nombre         String
   telefono       String
   contacto       String
+  activo         Boolean    @default(true)
   saldoPendiente Decimal    @default(0.00) @map("saldo_pendiente") @db.Decimal(10, 2)
   prestamos      Prestamo[]
 }
