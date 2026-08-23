@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
+import { EstadoPrestamo } from '@prisma/client';
 
 @Controller('loans')
 export class LoansController {
@@ -26,8 +27,9 @@ export class LoansController {
   findAll(
     @Query('clienteNit') clienteNit?: string,
     @Query('laptopCodigo') laptopCodigo?: string,
+    @Query('estado') estado?: EstadoPrestamo,
   ) {
-    return this.loansService.findAll({ clienteNit, laptopCodigo });
+    return this.loansService.findAll({ clienteNit, laptopCodigo, estado });
   }
 
   @Get(':id')

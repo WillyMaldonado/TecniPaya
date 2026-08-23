@@ -63,8 +63,15 @@ export class LaptopsService {
     });
   }
 
-  findAll() {
+  findAll(estado?: EstadoLaptop) {
+    if (estado && !Object.values(EstadoLaptop).includes(estado)) {
+      throw new BadRequestException(
+        `Estado '${estado}' no es válido. Valores permitidos: ${Object.values(EstadoLaptop).join(', ')}`,
+      );
+    }
+
     return this.prisma.altaLaptops.findMany({
+      where: estado ? { estado } : undefined,
       include: {
         proveedor: true,
         licencias: true,

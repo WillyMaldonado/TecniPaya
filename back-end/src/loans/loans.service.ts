@@ -106,13 +106,27 @@ export class LoansService {
     });
   }
 
-  async findAll(filtros?: { clienteNit?: string; laptopCodigo?: string }) {
+  async findAll(filtros?: {
+    clienteNit?: string;
+    laptopCodigo?: string;
+    estado?: EstadoPrestamo;
+  }) {
+    if (
+      filtros?.estado &&
+      !Object.values(EstadoPrestamo).includes(filtros.estado)
+    ) {
+      throw new BadRequestException(
+        `Estado '${filtros.estado}' no es válido. Valores permitidos: ${Object.values(EstadoPrestamo).join(', ')}`,
+      );
+    }
+
     return this.prisma.prestamo.findMany({
       where: {
         ...(filtros?.clienteNit ? { nit: filtros.clienteNit } : {}),
         ...(filtros?.laptopCodigo
           ? { laptops: { some: { codigoInventario: filtros.laptopCodigo } } }
           : {}),
+        ...(filtros?.estado ? { estado: filtros.estado } : {}),
       },
       include: {
         cliente: true,

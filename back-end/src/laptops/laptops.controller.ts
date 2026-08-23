@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LaptopsService } from './laptops.service';
 import { CreateLaptopDto } from './dto/create-laptop.dto';
@@ -13,6 +14,7 @@ import { UpdateLaptopDto } from './dto/update-laptop.dto';
 import { BajaDefinitivaDto } from './dto/baja-definitiva.dto';
 import { EnviarReparacionDto } from './dto/enviar-reparacion.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { EstadoLaptop } from '@prisma/client';
 
 @ApiTags('Laptops')
 @Controller('laptops')
@@ -25,8 +27,8 @@ export class LaptopsController {
   }
 
   @Get()
-  findAll() {
-    return this.laptopsService.findAll();
+  findAll(@Query('estado') estado?: EstadoLaptop) {
+    return this.laptopsService.findAll(estado);
   }
 
   @Get(':codigoInventario')
