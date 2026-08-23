@@ -12,7 +12,9 @@ import { CreateLaptopDto } from './dto/create-laptop.dto';
 import { UpdateLaptopDto } from './dto/update-laptop.dto';
 import { BajaDefinitivaDto } from './dto/baja-definitiva.dto';
 import { EnviarReparacionDto } from './dto/enviar-reparacion.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Laptops')
 @Controller('laptops')
 export class LaptopsController {
   constructor(private readonly laptopsService: LaptopsService) {}
