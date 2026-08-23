@@ -22,6 +22,7 @@ enum EstadoPrestamo {
 model Proveedor {
   id     String @id @default(uuid())
   nombre String
+  activo Boolean @default(true)
 
   laptops      AltaLaptops[]
   reparaciones Reparacion[]
