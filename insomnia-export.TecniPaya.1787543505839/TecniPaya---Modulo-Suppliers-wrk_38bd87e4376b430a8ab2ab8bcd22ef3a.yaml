@@ -1,0 +1,314 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: TecniPaya - Modulo Suppliers
+meta:
+  id: wrk_38bd87e4376b430a8ab2ab8bcd22ef3a
+  created: 1787450511076
+  modified: 1787450511076
+  description: ""
+collection:
+  - name: 1. Casos de exito
+    meta:
+      id: fld_17bc8412bb3f4da48ca2a7fe7d8338fd
+      created: 1787435000001
+      modified: 1787435000001
+      sortKey: 1
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/proveedores"
+        name: POST Crear proveedor (201)
+        meta:
+          id: req_bde74d0b6f1c4a2481a84961384d69c0
+          created: 1787435000010
+          modified: 1787435000010
+          isPrivate: false
+          description: ""
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "Dell Guatemala"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores"
+        name: GET Listar proveedores activos (200)
+        meta:
+          id: req_d64f073c829a4e12a64d8b1647dead21
+          created: 1787435000011
+          modified: 1787435000011
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores"
+        name: GET Listar todos, incluye inactivos (200)
+        meta:
+          id: req_5c58f96dcf0b47d69e9c83f20678b764
+          created: 1787435000012
+          modified: 1787450957926
+          isPrivate: false
+          description: ""
+          sortKey: 3
+        method: GET
+        parameters:
+          - name: todos
+            value: "true"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/{{ _.proveedor_id }}"
+        name: GET Buscar proveedor por ID (200)
+        meta:
+          id: req_46bc5fe5790744febfb75d59e26ed641
+          created: 1787435000013
+          modified: 1787451215669
+          isPrivate: false
+          description: Reemplaza proveedor_id en el environment con el id devuelto por el
+            POST de creacion, o edita la URL directamente
+          sortKey: 4
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/{{ _.proveedor_id }}"
+        name: PATCH Actualizar proveedor (200)
+        meta:
+          id: req_cebe13913d13481a87e271e292c50d58
+          created: 1787435000014
+          modified: 1787451206611
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "Dell Guatemala S.A."
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/{{ _.proveedor_id }}"
+        name: DELETE Inactivar proveedor (200)
+        meta:
+          id: req_58335f82238b43db8d80e4b3c5638e19
+          created: 1787435000015
+          modified: 1787435000015
+          isPrivate: false
+          description: ""
+          sortKey: 6
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 2. Casos de error
+    meta:
+      id: fld_b2be67fc5c8d4082af8b3f67a211ee53
+      created: 1787435000002
+      modified: 1787435000002
+      sortKey: 2
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/proveedores"
+        name: POST Crear proveedor - nombre duplicado (409)
+        meta:
+          id: req_c4346130337a4c6cb9409b02dd2a54a2
+          created: 1787435000020
+          modified: 1787435000020
+          isPrivate: false
+          description: Ejecutar despues de 'POST Crear proveedor (201)' con el mismo
+            nombre (comparacion case-insensitive)
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "dell guatemala"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores"
+        name: POST Crear proveedor - campo obligatorio faltante (400)
+        meta:
+          id: req_71ceaf05857f411fb442ea5da8c8e69a
+          created: 1787435000021
+          modified: 1787435000021
+          isPrivate: false
+          description: Body vacio, debe fallar por @IsNotEmpty en nombre
+          sortKey: 2
+        method: POST
+        body:
+          mimeType: application/json
+          text: "{}"
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores"
+        name: POST Crear proveedor - campo no permitido (400)
+        meta:
+          id: req_fd95850efe894e878e2db3f13db29e9b
+          created: 1787435000022
+          modified: 1787435000022
+          isPrivate: false
+          description: Envia 'activo' manualmente, debe fallar por forbidNonWhitelisted
+          sortKey: 3
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "HP Guatemala",
+              "activo": false
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/no-existe"
+        name: GET Buscar proveedor inexistente (404)
+        meta:
+          id: req_3dbbd5c367d3409bbc539cfda8e3b418
+          created: 1787435000023
+          modified: 1787435000023
+          isPrivate: false
+          description: ""
+          sortKey: 4
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/no-existe"
+        name: PATCH Actualizar proveedor inexistente (404)
+        meta:
+          id: req_7e37c279d09c450d96a30c3eef4a7a18
+          created: 1787435000024
+          modified: 1787435000024
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "No existe S.A."
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/proveedores/no-existe"
+        name: DELETE Inactivar proveedor inexistente (404)
+        meta:
+          id: req_6b2de9a2c8a14beaa95243c215a3509e
+          created: 1787435000025
+          modified: 1787435000025
+          isPrivate: false
+          description: ""
+          sortKey: 6
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_575b2cf9de92e92a75a9eae490ab6296c15fae2a
+    created: 1787450511079
+    modified: 1787450511079
+environments:
+  name: Base Environment
+  meta:
+    id: env_575b2cf9de92e92a75a9eae490ab6296c15fae2a
+    created: 1787450511077
+    modified: 1787451331005
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000
+    proveedor_id: 7baf5816-6a34-4136-98eb-ec1d9c825000

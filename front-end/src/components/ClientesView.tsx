@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
-import { Users, UserPlus, Search, Phone, CheckCircle2, ShieldAlert, Loader2, Pencil, Trash2, X } from 'lucide-react';
+import { Users, UserPlus, Search, Phone, CheckCircle2, ShieldAlert, Loader2, Pencil, PowerOff, X } from 'lucide-react';
 
 interface Client {
   nit: string;
@@ -8,6 +8,7 @@ interface Client {
   telefono?: string;
   contacto?: string;
   saldoPendiente?: number | string;
+  activo?: boolean; // Añadido para manejar el estado visual
 }
 
 export default function ClientesView() {
@@ -32,7 +33,8 @@ export default function ClientesView() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/clientes');
+      // Agregamos ?todos=true para traer también los inactivos
+      const res = await fetch('/api/clientes?todos=true');
       if (!res.ok) throw new Error('No se pudo obtener la lista de clientes.');
       const data = await res.json();
       setClients(data);
@@ -45,50 +47,50 @@ export default function ClientesView() {
   };
 
   useEffect(() => {
-      const loadClients = async () => {
-        await fetchClients();
-      };
-      loadClients();
-    }, []);
-
-    const handleSubmit = async (e: FormEvent) => {
-      e.preventDefault();
-      setSubmitting(true);
-      setError('');
-      setSuccessMsg('');
-
-      try {
-        const url = isEditing
-          ? `http://localhost:3000/clientes/${form.nit}`
-          : 'http://localhost:3000/clientes';
-
-        const method = isEditing ? 'PATCH' : 'POST';
-
-        const bodyData = isEditing
-          ? { nombre: form.nombre, telefono: form.telefono, contacto: form.contacto }
-          : form;
-
-        const res = await fetch(url, {
-          method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bodyData),
-        });
-
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.message || (isEditing ? 'Error al actualizar el cliente.' : 'Error al registrar el cliente.'));
-        }
-
-        setSuccessMsg(isEditing ? '¡Cliente actualizado exitosamente!' : '¡Cliente registrado exitosamente!');
-        resetForm();
-        fetchClients();
-      } catch (err: unknown) {
-        if (err instanceof Error) setError(err.message);
-        else setError('Ocurrió un error inesperado.');
-      } finally {
-        setSubmitting(false);
-      }
+    const loadClients = async () => {
+      await fetchClients();
     };
+    loadClients();
+  }, []);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError('');
+    setSuccessMsg('');
+
+    try {
+      const url = isEditing
+        ? `/api/clientes/${form.nit}`
+        : '/api/clientes';
+
+      const method = isEditing ? 'PATCH' : 'POST';
+
+      const bodyData = isEditing
+        ? { nombre: form.nombre, telefono: form.telefono, contacto: form.contacto }
+        : form;
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || (isEditing ? 'Error al actualizar el cliente.' : 'Error al registrar el cliente.'));
+      }
+
+      setSuccessMsg(isEditing ? '¡Cliente actualizado exitosamente!' : '¡Cliente registrado exitosamente!');
+      resetForm();
+      fetchClients();
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError('Ocurrió un error inesperado.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   // Preparar formulario para edición
   const handleEditClick = (client: Client) => {
@@ -109,40 +111,44 @@ export default function ClientesView() {
     setForm({ nit: '', nombre: '', telefono: '', contacto: '' });
   };
 
-  // Eliminar cliente
-  const handleDelete = async (nit: string) => {
-    if (!window.confirm(`¿Estás seguro de que deseas eliminar al cliente con NIT: ${nit}?`)) return;
+  // Inactivar cliente (soft-delete: el backend nunca borra registros, RN-08)
+  const handleInactivar = async (nit: string) => {
+    if (!window.confirm(`¿Estás seguro de que deseas inactivar al cliente con NIT: ${nit}? El registro no se eliminará, solo dejará de aparecer como activo.`)) return;
 
     setError('');
     setSuccessMsg('');
 
     try {
-      const res = await fetch(`http://localhost:3000/clientes/${nit}`, {
+      const res = await fetch(`/api/clientes/${nit}`, {
         method: 'DELETE',
       });
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.message || 'No se pudo eliminar el cliente.');
+        throw new Error(errData.message || 'No se pudo inactivar el cliente.');
       }
 
-      setSuccessMsg('Cliente eliminado correctamente.');
+      setSuccessMsg('Cliente inactivado correctamente.');
       fetchClients();
       if (form.nit === nit && isEditing) {
         resetForm();
       }
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
-      else setError('Error al intentar eliminar el cliente.');
+      else setError('Error al intentar inactivar el cliente.');
     }
   };
 
-  // Filtrar clientes en tiempo real
-  const filteredClients = clients.filter(
-    (c) =>
+  // Lógica de filtrado:
+  // - Si no hay búsqueda: mostrar solo activos.
+  // - Si hay búsqueda: buscar en todos (activos e inactivos).
+  const filteredClients = clients.filter((c) => {
+    const matchesSearch =
       c.nombre.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      c.nit.toLowerCase().includes(searchFilter.toLowerCase())
-  );
+      c.nit.toLowerCase().includes(searchFilter.toLowerCase());
+    const isVisible = searchFilter ? true : c.activo !== false;
+    return matchesSearch && isVisible;
+  });
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
@@ -256,14 +262,14 @@ export default function ClientesView() {
               Directorio de Clientes ({filteredClients.length})
             </h2>
 
-            {/* Buscador */}
+            {/* Buscador actualizado */}
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
               <input
                 type="text"
                 value={searchFilter}
                 onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder="Buscar por NIT o nombre..."
+                placeholder="Buscar (incluye inactivos)..."
                 className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:border-blue-600 focus:outline-none"
               />
             </div>
@@ -293,8 +299,22 @@ export default function ClientesView() {
                 <tbody className="divide-y divide-slate-800/60">
                   {filteredClients.map((client) => (
                     <tr key={client.nit} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-xs text-blue-400">{client.nit}</td>
-                      <td className="py-3.5 px-4 font-medium text-slate-100">{client.nombre}</td>
+                      <td className={`py-3.5 px-4 font-mono text-xs ${client.activo === false ? 'text-slate-500' : 'text-blue-400'}`}>
+                        {client.nit}
+                      </td>
+                      <td className="py-3.5 px-4 font-medium text-slate-100">
+                        {/* Etiqueta visual y tachado para inactivos */}
+                        <div className="flex items-center gap-2">
+                          <span className={client.activo === false ? 'text-slate-500 line-through' : ''}>
+                            {client.nombre}
+                          </span>
+                          {client.activo === false && (
+                            <span className="text-[9px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20">
+                              Inactivo
+                            </span>
+                          )}
+                        </div>
+                      </td>
                       <td className="py-3.5 px-4 text-xs text-slate-400">
                         <div className="flex items-center gap-1.5">
                           <Phone className="w-3.5 h-3.5 text-slate-500" />
@@ -302,7 +322,7 @@ export default function ClientesView() {
                         </div>
                         <div className="text-slate-500 mt-0.5">{client.contacto || ''}</div>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-semibold text-emerald-400">
+                      <td className={`py-3.5 px-4 text-right font-semibold ${client.activo === false ? 'text-slate-600' : 'text-emerald-400'}`}>
                         Q {Number(client.saldoPendiente || 0).toFixed(2)}
                       </td>
                       <td className="py-3.5 px-4 text-center">
@@ -314,13 +334,16 @@ export default function ClientesView() {
                           >
                             <Pencil className="w-4 h-4 text-amber-400" />
                           </button>
-                          <button
-                            onClick={() => handleDelete(client.nit)}
-                            title="Eliminar cliente"
-                            className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-red-400 rounded-lg border border-slate-800 transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {/* Ocultamos el botón de inactivar si ya está inactivo */}
+                          {client.activo !== false && (
+                            <button
+                              onClick={() => handleInactivar(client.nit)}
+                              title="Inactivar cliente"
+                              className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-red-400 rounded-lg border border-slate-800 transition-colors"
+                            >
+                              <PowerOff className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

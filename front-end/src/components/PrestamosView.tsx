@@ -60,8 +60,8 @@ export default function PrestamosView() {
   const fetchAuxData = async () => {
     try {
       const [clientsRes, laptopsRes] = await Promise.all([
-        fetch('http://localhost:3000/clientes'),
-        fetch('http://localhost:3000/laptops')
+        fetch('/api/clientes'),
+        fetch('/api/laptops')
       ]);
 
       if (clientsRes.ok) {
@@ -83,7 +83,7 @@ export default function PrestamosView() {
       setLoading(true);
       setError('');
       try {
-        let url = 'http://localhost:3000/loans';
+        let url = '/api/loans';
         if (filterNit.trim()) {
           url += `?clienteNit=${encodeURIComponent(filterNit.trim())}`;
         }
@@ -120,7 +120,7 @@ export default function PrestamosView() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3000/loans', {
+      const res = await fetch('/api/loans', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -140,7 +140,7 @@ export default function PrestamosView() {
       setForm({ clienteId: '', fechaEntrega: new Date().toISOString().split('T')[0], fechaDevolucionEstimada: '', laptopIds: [] });
 
       // Recargar la lista de préstamos manualmente tras crear uno nuevo
-      const reloadRes = await fetch('http://localhost:3000/loans');
+      const reloadRes = await fetch('/api/loans');
       if (reloadRes.ok) {
         const data: Loan[] = await reloadRes.json();
         setLoans(data);
@@ -160,7 +160,7 @@ export default function PrestamosView() {
     setSuccessMsg('');
 
     try {
-      const res = await fetch(`http://localhost:3000/loans/${id}/cerrar`, {
+      const res = await fetch(`/api/loans/${id}/cerrar`, {
         method: 'PATCH',
       });
 
@@ -172,7 +172,7 @@ export default function PrestamosView() {
       setSuccessMsg('Préstamo finalizado correctamente y saldo actualizado.');
 
       // Recargar la lista de préstamos manualmente tras cerrar uno
-      const reloadRes = await fetch('http://localhost:3000/loans');
+      const reloadRes = await fetch('/api/loans');
       if (reloadRes.ok) {
         const data: Loan[] = await reloadRes.json();
         setLoans(data);

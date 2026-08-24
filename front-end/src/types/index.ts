@@ -20,9 +20,9 @@ export interface LaptopData {
   codigoInventario: string;
   marca: string;
   modelo: string;
-  tieneMaletin: boolean;
-  tieneCargador: boolean;
-  estado: 'DISPONIBLE' | 'PRESTADA' | 'EN_REPARACION' | 'BAJA';
+  maletin: boolean;
+  cargador: boolean;
+  estado: 'DISPONIBLE' | 'PRESTADA' | 'EN_REPARACION' | 'BAJA_DEFINITIVA';
   proveedorId?: string;
   proveedor?: Supplier;
   licencias?: License[];
@@ -41,4 +41,13 @@ export interface LoanItem {
   fechaEntrega: string;
   estado: 'ACTIVO' | 'FINALIZADO';
   laptops: LoanLaptop[];
+}
+
+export interface Supplier {
+  id: string;
+  nombre: string;
+  contacto?: string;
+  telefono?: string;
+  email?: string;
+  activo?: boolean;
 }

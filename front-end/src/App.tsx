@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Laptop, Users, Search, ClipboardList } from 'lucide-react';
+import { Laptop, Users, Search, ClipboardList, Truck } from 'lucide-react';
 import LaptopsView from './components/LaptopsView';
 import ConsultaNit from './components/ConsultaNit';
 import ClientesView from './components/ClientesView';
 import PrestamosView from './components/PrestamosView';
+import SuppliersView from './components/SuppliersView';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'laptops' | 'clients' | 'search' | 'loans'>('laptops');
+  const [activeTab, setActiveTab] = useState<'laptops' | 'clients' | 'search' | 'loans' | 'suppliers'>('laptops');
 
   return (
     <div className="flex h-screen bg-slate-900 text-slate-100 font-sans">
@@ -49,6 +50,14 @@ export default function App() {
               <Users className="w-5 h-5" /> Clientes
             </button>
             <button
+              onClick={() => setActiveTab('suppliers')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'suppliers' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+              }`}
+            >
+              <Truck className="w-5 h-5" /> Proveedores
+            </button>
+            <button
               onClick={() => setActiveTab('loans')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === 'loans' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
@@ -69,6 +78,7 @@ export default function App() {
         {activeTab === 'laptops' && <LaptopsView />}
         {activeTab === 'search' && <ConsultaNit />}
         {activeTab === 'clients' && <ClientesView />}
+        {activeTab === 'suppliers' && <SuppliersView />}
         {activeTab === 'loans' && <PrestamosView />}
       </main>
     </div>
