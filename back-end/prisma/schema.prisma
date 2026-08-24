@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoLaptop {
+  DISPONIBLE
+  PRESTADA
+  EN_REPARACION
+  BAJA_DEFINITIVA
+}
+
+enum EstadoPrestamo {
+  ACTIVO
+  FINALIZADO
+  CANCELADO
+}
+
+model Proveedor {
+  id     String @id @default(uuid())
+  nombre String
+  activo Boolean @default(true)
+
+  laptops      AltaLaptops[]
+  reparaciones Reparacion[]
+}
+
+model Licencia {
+  id               String      @id @default(uuid())
+  codigoInventario String      @map("codigo_inventario")
+  nombreLicencia   String      @map("nombre_licencia")
+  laptop           AltaLaptops @relation(fields: [codigoInventario], references: [codigoInventario])
+}
+
+model AltaLaptops {
+  codigoInventario String       @id @map("codigo_inventario")
+  marca            String
+  modelo           String
+  proveedorId      String      @map("proveedor_id")
+  maletin          Boolean      @default(false)
+  cargador         Boolean      @default(true)
+  estado           EstadoLaptop @default(DISPONIBLE)
+  fechaBaja        DateTime?    @map("fecha_baja")
+  motivoBaja       String?      @map("motivo_baja")
+
+  proveedor       Proveedor       @relation(fields: [proveedorId], references: [id])
+  licencias       Licencia[]
+  reparaciones    Reparacion[]
+  prestamosLaptop PrestamoLaptop[]
+}
+
+model Cliente {
+  nit            String     @id
+  nombre         String
+  telefono       String
+  contacto       String
+  activo         Boolean    @default(true)
+  saldoPendiente Decimal    @default(0.00) @map("saldo_pendiente") @db.Decimal(10, 2)
+  prestamos      Prestamo[]
+}
+
+model Prestamo {
+  id              String         @id @default(uuid()) @map("id_prestamo")
+  nit             String
+  fechaEntrega    DateTime       @default(now()) @map("fecha_entrega")
+  fechaDevolucion DateTime?      @map("fecha_devolucion")
+  costo           Decimal?        @db.Decimal(10, 2)
+  estado          EstadoPrestamo @default(ACTIVO)
+
+  cliente Cliente          @relation(fields: [nit], references: [nit])
+  laptops PrestamoLaptop[]
+}
+
+model PrestamoLaptop {
+  idPrestamo       String      @map("id_prestamo")
+  codigoInventario String      @map("codigo_inventario")
+
+  prestamo Prestamo    @relation(fields: [idPrestamo], references: [id])
+  laptop   AltaLaptops @relation(fields: [codigoInventario], references: [codigoInventario])
+
+  @@id([idPrestamo, codigoInventario])
+  @@map("prestamo_laptop")
+}
+
+model Reparacion {
+  id                   String    @id @default(uuid())
+  codigoInventario     String    @map("codigo_inventario")
+  proveedorId          String    @map("proveedor_id")
+  fechaEnvio           DateTime  @default(now()) @map("fecha_envio")
+  fechaEstimadaRetorno DateTime? @map("fecha_estimada_retorno")
+  fechaRealRetorno     DateTime? @map("fecha_real_retorno")
+  motivoFalla          String    @map("motivo_falla")
+
+  laptop    AltaLaptops @relation(fields: [codigoInventario], references: [codigoInventario])
+  proveedor Proveedor   @relation(fields: [proveedorId], references: [id])
+}
