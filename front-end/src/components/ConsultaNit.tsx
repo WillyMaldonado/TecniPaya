@@ -45,7 +45,7 @@ export default function ConsultaNit() {
 
     try {
       // 1. Consultar datos del cliente
-      const clientRes = await fetch(`http://localhost:3000/clientes/${nitTrimmed}`);
+      const clientRes = await fetch(`/api/clientes/${nitTrimmed}`);
 
       if (!clientRes.ok) {
         if (clientRes.status === 404) {
@@ -58,7 +58,7 @@ export default function ConsultaNit() {
       setClientData(clientJson);
 
       // 2. Consultar los préstamos asociados a este NIT
-      const loansRes = await fetch(`http://localhost:3000/loans?clienteNit=${nitTrimmed}`);
+      const loansRes = await fetch(`/api/loans?clienteNit=${nitTrimmed}`);
       if (loansRes.ok) {
         const loansJson: LoanItem[] = await loansRes.json();
         const activos = loansJson.filter((loan) => loan.estado === 'ACTIVO');

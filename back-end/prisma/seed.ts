@@ -88,7 +88,10 @@ async function main() {
       cargador: true,
       estado: EstadoLaptop.PRESTADA,
       licencias: {
-        create: [{ nombreLicencia: 'Windows 11 Pro' }, { nombreLicencia: 'Office 365' }],
+        create: [
+          { nombreLicencia: 'Windows 11 Pro' },
+          { nombreLicencia: 'Office 365' },
+        ],
       },
     },
   });
@@ -171,13 +174,15 @@ async function main() {
     },
   });
 
-  console.log('Creando préstamo FINALIZADO (ejemplo RN-01 del documento: 5 días, Q500.00)...');
+  console.log(
+    'Creando préstamo FINALIZADO (ejemplo RN-01 del documento: 5 días, Q500.00)...',
+  );
   const costoEjemplo = 5 * 100 * 1; // 5 días x Q100 x 1 laptop = Q500.00
   await prisma.prestamo.create({
     data: {
       cliente: { connect: { nit: clienteElProgreso.nit } },
-      fechaEntrega: new Date('2026-09-01'),
-      fechaDevolucion: new Date('2026-09-06'),
+      fechaEntrega: new Date('2026-08-10'),
+      fechaDevolucion: new Date('2026-08-15'),
       costo: costoEjemplo,
       estado: EstadoPrestamo.FINALIZADO,
       laptops: {

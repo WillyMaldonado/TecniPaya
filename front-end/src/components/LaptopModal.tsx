@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
-import { X, Loader2 } from 'lucide-react';
+import { X, Loader2, Plus, Trash2 } from 'lucide-react';
 import type { Supplier } from '../types';
 
 interface LaptopModalProps {
@@ -24,12 +24,15 @@ export default function LaptopModal({ isOpen, onClose, onSuccess }: LaptopModalP
     proveedorId: '',
   });
 
+  // Licencias: campos de texto dinámicos, no obligatorios
+  const [licencias, setLicencias] = useState<string[]>([]);
+
   useEffect(() => {
     if (isOpen) {
       const fetchSuppliers = async () => {
         setLoadingSuppliers(true);
         try {
-          const res = await fetch('http://localhost:3000/proveedores');
+          const res = await fetch('/api/proveedores');
           if (res.ok) {
             const data: Supplier[] = await res.json();
             setSuppliers(data);
@@ -46,24 +49,58 @@ export default function LaptopModal({ isOpen, onClose, onSuccess }: LaptopModalP
 
   if (!isOpen) return null;
 
+  const handleAddLicencia = () => {
+    setLicencias((prev) => [...prev, '']);
+  };
+
+  const handleLicenciaChange = (index: number, value: string) => {
+    setLicencias((prev) => prev.map((lic, i) => (i === index ? value : lic)));
+  };
+
+  const handleRemoveLicencia = (index: number) => {
+    setLicencias((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
     setError('');
 
     try {
-      const res = await fetch('http://localhost:3000/laptops', {
+      // Solo enviamos licencias con texto real (descartamos campos vacíos
+      // que el usuario haya agregado y dejado en blanco)
+      const licenciasLimpias = licencias.map((l) => l.trim()).filter((l) => l.length > 0);
+
+      const body = {
+        ...formData,
+        ...(licenciasLimpias.length > 0 ? { licencias: licenciasLimpias } : {}),
+      };
+
+      const res = await fetch('/api/laptops', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
-        throw new Error('No se pudo registrar la laptop. Verifique los datos.');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(
+          (errData as { message?: string }).message ||
+            'No se pudo registrar la laptop. Verifique los datos.',
+        );
       }
 
       onSuccess();
       onClose();
+      setFormData({
+        codigoInventario: '',
+        marca: '',
+        modelo: '',
+        maletin: true,
+        cargador: true,
+        proveedorId: '',
+      });
+      setLicencias([]);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -77,7 +114,7 @@ export default function LaptopModal({ isOpen, onClose, onSuccess }: LaptopModalP
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-950 border border-slate-800 rounded-xl w-full max-w-lg p-6 space-y-6">
+      <div className="bg-slate-950 border border-slate-800 rounded-xl w-full max-w-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center border-b border-slate-800 pb-4">
           <h3 className="text-lg font-bold">Alta de Nueva Laptop</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-white">
@@ -170,6 +207,50 @@ export default function LaptopModal({ isOpen, onClose, onSuccess }: LaptopModalP
               />
               <span className="text-sm">Incluye Cargador</span>
             </label>
+          </div>
+
+          {/* Licencias: opcional, puede haber más de una */}
+          <div className="pt-2 border-t border-slate-800">
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-medium text-slate-400">
+                Licencias de software (opcional)
+              </label>
+              <button
+                type="button"
+                onClick={handleAddLicencia}
+                className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1"
+              >
+                <Plus className="w-3.5 h-3.5" /> Agregar licencia
+              </button>
+            </div>
+
+            {licencias.length === 0 ? (
+              <p className="text-xs text-slate-500 italic">
+                Ningún equipo tiene licencias registradas todavía. Usa "Agregar licencia" si aplica.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {licencias.map((lic, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={lic}
+                      onChange={(e) => handleLicenciaChange(index, e.target.value)}
+                      placeholder="ej. Windows 11 Pro"
+                      className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:border-blue-600 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveLicencia(index)}
+                      className="p-2 bg-slate-900 hover:bg-slate-800 text-red-400 rounded-lg border border-slate-800"
+                      title="Quitar licencia"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">

@@ -1,0 +1,492 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: TecniPaya - Modulo Laptops
+meta:
+  id: wrk_e49093641ca5406fa0cba17c2174cc94
+  created: 1787498066591
+  modified: 1787498066591
+  description: ""
+collection:
+  - name: 1. Casos de exito
+    meta:
+      id: fld_62694d6913e2468c9977dfdbcfc6f687
+      created: 1787460000001
+      modified: 1787460000001
+      sortKey: 1
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/laptops"
+        name: POST Crear laptop (201)
+        meta:
+          id: req_b57ec7779acc4cdf93c79498403c088c
+          created: 1787460000010
+          modified: 1787499546649
+          isPrivate: false
+          description: Reemplaza proveedor_id en el environment con un ID de proveedor
+            activo real (creado via el modulo Suppliers)
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoInventario": "LAP-002",
+              "marca": "ASUS",
+              "modelo": "Vivobook",
+              "proveedorId": "{{ _.proveedor_id }}",
+              "maletin": true,
+              "cargador": true,
+              "licencias": ["Windows 11"]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops"
+        name: GET Listar laptops (200)
+        meta:
+          id: req_fe7dd2c55c3345d8beeb7ef530f24f2f
+          created: 1787460000011
+          modified: 1787460000011
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-001"
+        name: GET Buscar laptop por codigo (200)
+        meta:
+          id: req_abc6d3ee1dbf448bb36513be84ce68ec
+          created: 1787460000012
+          modified: 1787460000012
+          isPrivate: false
+          description: ""
+          sortKey: 3
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-001"
+        name: PATCH Actualizar laptop (200)
+        meta:
+          id: req_a83d3cb70b334b5ba94cac6a99da82e9
+          created: 1787460000013
+          modified: 1787460000013
+          isPrivate: false
+          description: ""
+          sortKey: 4
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "Dell Inc."
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-002/reparacion"
+        name: POST Enviar a reparacion (201)
+        meta:
+          id: req_8b247a108c384ee0b4be0abb8c8bf9ed
+          created: 1787460000014
+          modified: 1787507279096
+          isPrivate: false
+          description: La laptop debe estar DISPONIBLE. Cambia su estado a EN_REPARACION
+          sortKey: 5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "proveedorId": "{{ _.proveedor_id }}",
+              "fechaEstimadaRetorno": "2026-09-01",
+              "motivoFalla": "No enciende"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-002/reparacion/retorno"
+        name: PATCH Registrar retorno de reparacion (200)
+        meta:
+          id: req_e5ee046e40b14220a080dbd1e39aad6e
+          created: 1787460000015
+          modified: 1787507271659
+          isPrivate: false
+          description: Ejecutar despues de 'POST Enviar a reparacion'. Devuelve la laptop
+            a DISPONIBLE
+          sortKey: 6
+        method: PATCH
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-001/baja-definitiva"
+        name: DELETE Dar de baja definitiva (200)
+        meta:
+          id: req_64a16b13fd874d11855c75c69bedb88f
+          created: 1787460000016
+          modified: 1787460000016
+          isPrivate: false
+          description: Ejecutar de ultimo, ya que deja la laptop en estado final sin
+            transiciones posibles
+          sortKey: 7
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "motivoBaja": "Equipo obsoleto, ya no es reparable"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 2. Casos de error
+    meta:
+      id: fld_3557ae40d69c40b0ba21ae0992856769
+      created: 1787460000002
+      modified: 1787460000002
+      sortKey: 2
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/laptops"
+        name: POST Crear laptop - codigo duplicado (409)
+        meta:
+          id: req_3400dcd4281841699a0cdde1cb3cf573
+          created: 1787460000020
+          modified: 1787460000020
+          isPrivate: false
+          description: Ejecutar despues de 'POST Crear laptop (201)' con el mismo
+            codigoInventario
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoInventario": "LAP-001",
+              "marca": "Dell",
+              "modelo": "Latitude 5420",
+              "proveedorId": "{{ _.proveedor_id }}",
+              "maletin": true,
+              "cargador": true
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops"
+        name: POST Crear laptop - proveedor no existe (404)
+        meta:
+          id: req_f2b6de9ce3f14fd281fdd836d44866f9
+          created: 1787460000021
+          modified: 1787460000021
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoInventario": "LAP-999",
+              "marca": "Dell",
+              "modelo": "Latitude 5420",
+              "proveedorId": "00000000-0000-0000-0000-000000000000",
+              "maletin": true,
+              "cargador": true
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops"
+        name: POST Crear laptop - proveedor inactivo (400)
+        meta:
+          id: req_f55ff963a0ab4cdab6cd1ce090a8c1f8
+          created: 1787460000022
+          modified: 1787460000022
+          isPrivate: false
+          description: Necesita un proveedor inactivo real (crea uno en Suppliers y luego
+            inactivalo via DELETE /proveedores/:id). Pega ese id en
+            proveedor_id_inactivo
+          sortKey: 3
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoInventario": "LAP-998",
+              "marca": "Dell",
+              "modelo": "Latitude 5420",
+              "proveedorId": "{{ _.proveedor_id_inactivo }}",
+              "maletin": true,
+              "cargador": true
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops"
+        name: POST Crear laptop - campo obligatorio faltante (400)
+        meta:
+          id: req_0d44bbb57b6445eab17a3cf62f60e341
+          created: 1787460000023
+          modified: 1787460000023
+          isPrivate: false
+          description: Falta 'maletin' y 'cargador'
+          sortKey: 4
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "codigoInventario": "LAP-997",
+              "marca": "Dell",
+              "modelo": "Latitude 5420",
+              "proveedorId": "{{ _.proveedor_id }}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/NO-EXISTE"
+        name: GET Buscar laptop inexistente (404)
+        meta:
+          id: req_16c461181a114d36b401c30ca04ddb99
+          created: 1787460000024
+          modified: 1787460000024
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/NO-EXISTE"
+        name: PATCH Actualizar laptop inexistente (404)
+        meta:
+          id: req_f8394e40b5404cb09d6d008d14825d36
+          created: 1787460000025
+          modified: 1787460000025
+          isPrivate: false
+          description: ""
+          sortKey: 6
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "marca": "HP"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-001/reparacion"
+        name: POST Enviar a reparacion - laptop no disponible (400)
+        meta:
+          id: req_cb8b03cbd715436f8ee2e7f36ad91172
+          created: 1787460000026
+          modified: 1787460000026
+          isPrivate: false
+          description: Ejecutar cuando la laptop YA esta EN_REPARACION o BAJA_DEFINITIVA
+            (por ejemplo, correr esto dos veces seguidas)
+          sortKey: 7
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "proveedorId": "{{ _.proveedor_id }}",
+              "motivoFalla": "No enciende otra vez"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-002/reparacion/retorno"
+        name: PATCH Registrar retorno - laptop no esta en reparacion (400)
+        meta:
+          id: req_b96901bc072c44a8b69450bfd4d8d183
+          created: 1787460000027
+          modified: 1787499592453
+          isPrivate: false
+          description: Ejecutar sobre una laptop DISPONIBLE (que nunca se envio a
+            reparacion, o ya volvio)
+          sortKey: 8
+        method: PATCH
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/LAP-002/baja-definitiva"
+        name: DELETE Dar de baja - laptop PRESTADA (400)
+        meta:
+          id: req_dccf5f0319dc484fbcb7644ac3511468
+          created: 1787460000028
+          modified: 1787499625438
+          isPrivate: false
+          description: Requiere una laptop en estado PRESTADA (se logra con el modulo de
+            Prestamos, aun no construido)
+          sortKey: 9
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "motivoBaja": "Intento invalido"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/laptops/NO-EXISTE/baja-definitiva"
+        name: DELETE Dar de baja - laptop inexistente (404)
+        meta:
+          id: req_112bd7aa21694f35a244746f1babf2a5
+          created: 1787460000029
+          modified: 1787460000029
+          isPrivate: false
+          description: ""
+          sortKey: 10
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "motivoBaja": "No existe"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_9d8f58ac4a304ebfac065bc3d95d3616
+    created: 1787460000098
+    modified: 1787460000098
+environments:
+  name: Base Environment
+  meta:
+    id: env_32a2a16a2c954140a4f3812de00c1ff8
+    created: 1787460000005
+    modified: 1787498794122
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000
+    proveedor_id: 63330864-8d34-4bc6-9416-24258dcc0d99
+    proveedor_id_inactivo: 7baf5816-6a34-4136-98eb-ec1d9c825000

@@ -1,0 +1,383 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: TecniPaya - Modulo Clientes
+meta:
+  id: wrk_8af681674a1e48d9a6ebebc3011552c5
+  created: 1787434829804
+  modified: 1787434829804
+  description: ""
+collection:
+  - name: 1. Casos de exito
+    meta:
+      id: fld_390ded3cfda14ca9944ead453a31b5e5
+      created: 1787434829807
+      modified: 1787434829807
+      sortKey: 1
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/clientes"
+        name: POST Crear cliente (201)
+        meta:
+          id: req_556e9c073f4c4fb8966d2199a7c63096
+          created: 1787434829810
+          modified: 1787515121182
+          isPrivate: false
+          description: ""
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nit": "765432-1",
+              "nombre": "Cliente Prueba 2",
+              "telefono": "12345678",
+              "contacto": "Juan Perez"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes"
+        name: GET Listar clientes activos (200)
+        meta:
+          id: req_722d508f2adb4609bc6d5e50f89eed77
+          created: 1787434829811
+          modified: 1787434829811
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes"
+        name: GET Listar todos, incluye inactivos (200)
+        meta:
+          id: req_2c2d79f8edbf403cbc73c3506bedb93f
+          created: 1787434829812
+          modified: 1787434829812
+          isPrivate: false
+          description: ""
+          sortKey: 3
+        method: GET
+        parameters:
+          - name: todos
+            value: "true"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/123456-7"
+        name: GET Buscar cliente por NIT (200)
+        meta:
+          id: req_c95a9ae916554892a497afad0b3e8ad1
+          created: 1787434829813
+          modified: 1787434829813
+          isPrivate: false
+          description: ""
+          sortKey: 4
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/123456-7"
+        name: PATCH Actualizar cliente (200)
+        meta:
+          id: req_1547b8e46f5b4d569feb5b70d91ac125
+          created: 1787434829814
+          modified: 1787434829814
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "telefono": "87654321"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/123456-7"
+        name: DELETE Inactivar cliente (200)
+        meta:
+          id: req_5e42151a2873404f8cb35e3bf7ac7f10
+          created: 1787434829815
+          modified: 1787434829815
+          isPrivate: false
+          description: ""
+          sortKey: 6
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 2. Casos de error
+    meta:
+      id: fld_6311f3839b494f6f8c7acd0b1fcf1b81
+      created: 1787434829809
+      modified: 1787434829809
+      sortKey: 2
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/clientes"
+        name: POST Crear cliente - campo obligatorio faltante (400)
+        meta:
+          id: req_8a27166a63a0436d9d85c33a86656dcc
+          created: 1787434829816
+          modified: 1787434829816
+          isPrivate: false
+          description: Falta 'telefono', debe fallar por @IsNotEmpty
+          sortKey: 2
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nit": "999999-9",
+              "nombre": "Cliente Incompleto",
+              "contacto": "Maria Lopez"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes"
+        name: POST Crear cliente - NIT duplicado (409)
+        meta:
+          id: req_e2f4b7e920214914a0471e1b8cd39246
+          created: 1787434829816
+          modified: 1787437226603
+          isPrivate: false
+          description: Ejecutar despues de 'POST Crear cliente (201)' con el mismo NIT
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nit": "123456-7",
+              "nombre": "Cliente Prueba",
+              "telefono": "12345678",
+              "contacto": "Juan Perez"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes"
+        name: POST Crear cliente - campo no permitido (400)
+        meta:
+          id: req_170d441fd7884611b58e3b71588f7bb8
+          created: 1787434829817
+          modified: 1787434829817
+          isPrivate: false
+          description: Envia 'saldoPendiente' manualmente, debe fallar por
+            forbidNonWhitelisted
+          sortKey: 3
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nit": "888888-8",
+              "nombre": "Cliente Tramposo",
+              "telefono": "12121212",
+              "contacto": "Pedro Ruiz",
+              "saldoPendiente": 5000
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/no-existe"
+        name: GET Buscar cliente inexistente (404)
+        meta:
+          id: req_151e82aa88be47dcb4fef4c44aa489b1
+          created: 1787434829818
+          modified: 1787434829818
+          isPrivate: false
+          description: ""
+          sortKey: 4
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/no-existe"
+        name: PATCH Actualizar cliente inexistente (404)
+        meta:
+          id: req_762992c1804b4124abf7f873cce932f6
+          created: 1787434829819
+          modified: 1787434829819
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "telefono": "00000000"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/no-existe"
+        name: DELETE Inactivar cliente inexistente (404)
+        meta:
+          id: req_052220e8d4234318b97d3b4151af582f
+          created: 1787434829820
+          modified: 1787434829820
+          isPrivate: false
+          description: ""
+          sortKey: 6
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes"
+        name: POST Crear cliente - tipo de dato invalido (400)
+        meta:
+          id: req_703b685536c647df9f69a0f0302b328f
+          created: 1787437211764
+          modified: 1787437544795
+          isPrivate: false
+          description: ""
+          sortKey: -1787437211764
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nit": "777777-7",
+              "nombre": "Cliente Test",
+              "telefono": 12345678,
+              "contacto": "Test"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/clientes/123456-7"
+        name: New Request
+        meta:
+          id: req_c1251a537fd7488a95a617e5448059d0
+          created: 1787437530390
+          modified: 1787437636512
+          isPrivate: false
+          description: ""
+          sortKey: 4.5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"edad":25
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_1fb3986c64b973f34db9abf3e3d263fa3fc298a1
+    created: 1787434829898
+    modified: 1787434829898
+environments:
+  name: Base Environment
+  meta:
+    id: env_32968b34f2d541a2b1a752322caf4581
+    created: 1787434829806
+    modified: 1787434829806
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000

@@ -1,0 +1,355 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: TecniPaya - Modulo Loans
+meta:
+  id: wrk_d1fcf239e10a4352ba5d3740102b1eaa
+  created: 1787511158752
+  modified: 1787511194626
+  description: ""
+collection:
+  - name: 1. Casos de exito
+    meta:
+      id: fld_e54e5ed76c9c4dce808c2fa74b0b4337
+      created: 1787461000001
+      modified: 1787461000001
+      sortKey: 1
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo (201)
+        meta:
+          id: req_f310cdc5db874c0687a5762d7777eeef
+          created: 1787461000010
+          modified: 1787515177591
+          isPrivate: false
+          description: Requiere un NIT de cliente activo y codigos de inventario de
+            laptops DISPONIBLES
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "765432-1",
+              "fechaEntrega": "2026-08-23T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-002"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: GET Listar prestamos (200)
+        meta:
+          id: req_62bc10cbf87348848a495c0ffb856c38
+          created: 1787461000011
+          modified: 1787461000011
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans/156ed8e2-1de5-4853-8959-f45ffb4d69b1"
+        name: GET Buscar prestamo por ID (200)
+        meta:
+          id: req_af56d802e1b74dd198eb323b08996de3
+          created: 1787461000012
+          modified: 1787516609110
+          isPrivate: false
+          description: Reemplaza prestamo_id en el environment con un ID UUID real de
+            prestamo
+          sortKey: 3
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans/156ed8e2-1de5-4853-8959-f45ffb4d69b1/cerrar"
+        name: PATCH Cerrar prestamo (200)
+        meta:
+          id: req_251ab86256b04befab4bdfcf03aae931
+          created: 1787461000013
+          modified: 1787516634005
+          isPrivate: false
+          description: Finaliza el prestamo, devuelve las laptops a DISPONIBLE y suma el
+            costo al saldo del cliente
+          sortKey: 4
+        method: PATCH
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: 2. Casos de error
+    meta:
+      id: fld_3f237f9feabe426e829d4ca9d617bc4f
+      created: 1787461000002
+      modified: 1787461000002
+      sortKey: 2
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - fecha devolucion anterior (400)
+        meta:
+          id: req_3dec8010e96947f6ad2d019e8de0a68d
+          created: 1787461000020
+          modified: 1787461000020
+          isPrivate: false
+          description: La fecha de devolucion estimada no puede ser anterior a la de entrega
+          sortKey: 1
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "1234567-8",
+              "fechaEntrega": "2026-08-28T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-20T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-001"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - cliente no existe o inactivo (404)
+        meta:
+          id: req_41a206ed477e4d52802fcbf831fd8302
+          created: 1787461000021
+          modified: 1787461000021
+          isPrivate: false
+          description: ""
+          sortKey: 2
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "NIT-INEXISTENTE",
+              "fechaEntrega": "2026-08-23T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-001"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - laptop no existe en inventario (404)
+        meta:
+          id: req_c5e1b037f2ac42f5bd57b7e4be067024
+          created: 1787461000022
+          modified: 1787515518426
+          isPrivate: false
+          description: ""
+          sortKey: 3
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "765432-1",
+              "fechaEntrega": "2026-08-23T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-999-INEXISTENTE"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - laptop no disponible (409)
+        meta:
+          id: req_098a9524571548d987f81d7d6c45533f
+          created: 1787461000023
+          modified: 1787515545946
+          isPrivate: false
+          description: Intentar prestar una laptop que ya esta PRESTADA
+          sortKey: 4
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "765432-1",
+              "fechaEntrega": "2026-08-23T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-001"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans/00000000-0000-0000-0000-000000000000"
+        name: GET Buscar prestamo inexistente (404)
+        meta:
+          id: req_aaababfcddd445a28ba7f33f0bd847b7
+          created: 1787461000024
+          modified: 1787461000024
+          isPrivate: false
+          description: ""
+          sortKey: 5
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans/b1fe87d1-efc1-4311-9359-5c67e49f1441/cerrar"
+        name: PATCH Cerrar prestamo ya finalizado (400)
+        meta:
+          id: req_63c920c0aa964141b47655df8e11d33b
+          created: 1787461000025
+          modified: 1787515569371
+          isPrivate: false
+          description: Ejecutar dos veces seguidas sobre el mismo prestamo
+          sortKey: 6
+        method: PATCH
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - arreglo laptops vacio DTO (400)
+        meta:
+          id: req_cb6f830ba0c64171be0e2ebaa4dfa5ce
+          created: 1787461000026
+          modified: 1787461000026
+          isPrivate: false
+          description: Validado por @ArrayMinSize(1)
+          sortKey: 7
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "1234567-8",
+              "fechaEntrega": "2026-08-23T08:00:00.000Z",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": []
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/loans"
+        name: POST Crear prestamo - formato fecha invalido DTO (400)
+        meta:
+          id: req_3405b67ba5b14e5c92949fa2e5f719d5
+          created: 1787461000027
+          modified: 1787461000027
+          isPrivate: false
+          description: Validado por @IsDateString()
+          sortKey: 8
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "clienteId": "1234567-8",
+              "fechaEntrega": "no-es-una-fecha",
+              "fechaDevolucionEstimada": "2026-08-28T18:00:00.000Z",
+              "laptopIds": [
+                "LAP-001"
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_14a1da238c52d3515dd1ba00a45f98ba295b7bc3
+    created: 1787511158862
+    modified: 1787511158862
+environments:
+  name: Base Environment
+  meta:
+    id: env_14a1da238c52d3515dd1ba00a45f98ba295b7bc3
+    created: 1787511158768
+    modified: 1787513189207
+    isPrivate: false
+  data:
+    base_url: http://localhost:3000
